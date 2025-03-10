@@ -11,7 +11,6 @@ st.write(
 )
 
 # Ask user for their DeepSeek API key via `st.text_input`.
-# You can also store the API key in `./.streamlit/secrets.toml` and access it via `st.secrets`.
 deepseek_api_key = st.text_input("DeepSeek API Key", type="password")
 if not deepseek_api_key:
     st.info("Please add your DeepSeek API key to continue.", icon="🗝️")
@@ -49,10 +48,12 @@ else:
         # Make the request to DeepSeek's API
         response = requests.post(url, json=data, headers=headers)
 
+        # Debugging: Check the response status and error message if any
         if response.status_code == 200:
             bot_response = response.json().get("choices")[0].get("message").get("content")
         else:
-            bot_response = "I'm sorry, I couldn't process your request."
+            # Print detailed error response
+            bot_response = f"Error: {response.status_code}, Message: {response.text}"
 
         # Display the response from DeepSeek API
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
